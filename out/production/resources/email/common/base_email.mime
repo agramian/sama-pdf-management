@@ -1,0 +1,23 @@
+Subject: ${subject}
+From: ${from}
+To: ${user_email}
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="${mime_part_boundary}"
+
+--${mime_part_boundary}
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+${header_plain_text}
+${body_plain_text}
+${footer_plain_text}
+
+--${mime_part_boundary}
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+${header_html}
+${body_html}
+${footer_html}
+
+--${mime_part_boundary}--

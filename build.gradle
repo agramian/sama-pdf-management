@@ -1,0 +1,161 @@
+plugins {
+    id 'java'
+    id'application'
+    id 'net.ltgt.apt' version '0.18'
+    id 'idea'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
+}
+
+apply from: 'constants.gradle'
+
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
+sourceCompatibility = 1.8
+
+mainClassName = "com.abtingramian.service.Application"
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+idea {
+    module {
+        // mark the integrationTest directory as a test directory for IntelliJ
+        testSourceDirs += file('src/integrationTest/java')
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'src/prod/java', 'build/generated/source/apt/main']
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ['src/test/java', 'src/mock/java', 'build/generated/source/apt/test']
+        }
+    }
+
+    integrationTest {
+        java {
+            srcDirs = ['src/integrationTest/java', 'build/generated/source/apt/integrationTest']
+        }
+        resources.srcDir file('src/integrationTest/resources')
+    }
+}
+
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+    // local unit tests
+    testImplementation "junit:junit:$junitLibVer"
+    testImplementation "org.mockito:mockito-core:$mockitoLibVer"
+
+    // local integration tests
+    integrationTestImplementation sourceSets.main.output
+    integrationTestImplementation sourceSets.test.output
+
+    integrationTestImplementation configurations.compile
+    integrationTestImplementation configurations.testCompile
+
+    integrationTestCompileClasspath configurations.compileClasspath
+    integrationTestCompileClasspath configurations.testCompileClasspath
+
+    integrationTestRuntimeClasspath configurations.runtimeClasspath
+    integrationTestRuntimeClasspath configurations.testRuntimeClasspath
+
+    integrationTestRuntimeOnly configurations.runtime
+    integrationTestRuntimeOnly configurations.testRuntime
+
+    // spark
+    implementation "com.sparkjava:spark-core:$sparkCoreLibVer"
+
+    // logging
+    implementation "org.slf4j:slf4j-simple:$slf4jLibVer"
+
+    // gson
+    implementation "com.google.code.gson:gson:$gsonLibVer"
+
+    // okhttp
+    implementation "com.squareup.okhttp3:okhttp:$okHttpLibVer"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttpLibVer"
+
+    // guava
+    implementation "com.google.guava:guava:$guavaLibVer"
+
+    // dagger
+    implementation "com.google.dagger:dagger:$daggerLibVer"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerLibVer"
+
+    // database
+    implementation "org.postgresql:postgresql:$postgresqlLibVer"
+    implementation "org.flywaydb:flyway-core:$flywayLibVer"
+    implementation "org.sql2o:sql2o:$sql2oLibVer"
+
+    // email
+    implementation "com.sun.mail:javax.mail:$javaMailLibVer"
+
+    // retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitLibVer"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitLibVer"
+    implementation "com.squareup.retrofit2:converter-scalars:$rootProject.ext.retrofitLibVer"
+
+    // string algorithms
+    compile "org.apache.commons:commons-text:$apacheCommonsTextLibVer"
+}
+
+task integrationTest(type: Test) {
+    group = LifecycleBasePlugin.VERIFICATION_GROUP
+    description = 'Runs the integration tests.'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+    mustRunAfter tasks.test
+}
+
+tasks.withType(Test) {
+    // Always show the result of every unit test, even if it passes.
+    testLogging {
+        // set options for log level LIFECYCLE
+        events TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR
+        showExceptions true
+        exceptionFormat TestExceptionFormat.FULL
+        showCauses true
+        showStackTraces true
+
+        // set options for log level QUIET
+        quiet.events = events
+        quiet.exceptionFormat = exceptionFormat
+
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                def output = "Results: ${result.resultType} (${result.testCount} ${TestLogEvent.STARTED}, ${result.successfulTestCount} ${TestLogEvent.PASSED}, ${result.failedTestCount} ${TestLogEvent.FAILED}, ${result.skippedTestCount} ${TestLogEvent.SKIPPED})"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+            }
+        }
+    }
+}
+
+run {
+    args = [project.findProperty("env") ?: "development"]
+}
+
+// run integration tests during build
+check.dependsOn integrationTest
+
+// force all tasks to first run clean
+compileJava.dependsOn clean
+
+shadowJar {
+    classifier = null
+    version = null
+}

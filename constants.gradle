@@ -1,0 +1,17 @@
+project.ext {
+    // dependency version declarations for interpolation
+    sparkCoreLibVer = '2.7.2'
+    junitLibVer = '4.12'
+    slf4jLibVer = '1.7.25'
+    gsonLibVer = '2.8.5'
+    okHttpLibVer = '3.11.0'
+    guavaLibVer = '26.0-jre'
+    daggerLibVer = '2.17'
+    postgresqlLibVer = '42.2.5'
+    flywayLibVer = '5.1.4'
+    sql2oLibVer = '1.5.4'
+    mockitoLibVer = '2.21.0'
+    javaMailLibVer = '1.6.2'
+    retrofitLibVer = '2.4.0'
+    apacheCommonsTextLibVer = '1.4'
+}

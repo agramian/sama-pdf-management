@@ -1,0 +1,3 @@
+${header_plain_text}
+${body_plain_text}
+${footer_plain_text}

@@ -1,0 +1,14 @@
+{
+  "portNumber" : 4567,
+  "debug" : true,
+  "test" : false,
+  "accessLogPath" : "log/access-development.log",
+  "dbHost" : "localhost",
+  "dbUser" : "sama",
+  "dbPassword" : "",
+  "dbName" : "sama-development",
+  "frontendBaseUrl" : "http://localhost:8080",
+  "apiBaseUrl" : "https://api.mailgun.net/v3/kosme.us/",
+  "apiKey" : "key-698408f635d3d544a52f818763598f44",
+  "rickAndMortyApiBaseUrl": "https://rickandmortyapi.com/api/"
+}
