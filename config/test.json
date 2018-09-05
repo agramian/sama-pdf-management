@@ -7,8 +7,5 @@
   "dbUser" : "sama",
   "dbPassword" : "",
   "dbName" : "sama-test",
-  "frontendBaseUrl" : "http://localhost:8080",
-  "apiBaseUrl" : "https://api.mailgun.net/v3/sandbox1f444c05e5e94bff828a0449bb77ae94.mailgun.org/",
-  "apiKey" : "key-698408f635d3d544a52f818763598f44",
-  "rickAndMortyApiBaseUrl": "https://rickandmortyapi.com/api/"
+  "frontendBaseUrl" : "http://localhost:8080"
 }

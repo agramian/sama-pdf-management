@@ -1,1 +1,0 @@
-Please verify your Kosme account here <${verification_url}>.

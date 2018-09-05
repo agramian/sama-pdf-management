@@ -1,6 +1,0 @@
-
-© ${year} Kosme, ${company_address}
-
-${kosme_web_url}
-
-This email was sent to ${user_email} to provide an update about your Kosme Account.

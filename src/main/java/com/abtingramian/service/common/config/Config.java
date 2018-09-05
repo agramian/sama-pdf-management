@@ -22,11 +22,5 @@ public class Config {
     public String dbName;
     @Expose
     public String frontendBaseUrl;
-    @Expose
-    public String apiBaseUrl;
-    @Expose
-    public String apiKey;
-    @Expose
-    public String rickAndMortyApiBaseUrl;
 
 }

@@ -10,17 +10,10 @@ import com.abtingramian.service.common.middleware.Filters;
 import com.abtingramian.service.common.route.BaseController;
 import com.abtingramian.service.common.route.Routes;
 import com.abtingramian.service.common.util.Constants;
-import com.abtingramian.service.common.util.ResourceProvider;
-import com.abtingramian.service.data.model.Form;
-import com.abtingramian.service.data.model.FormConfig;
 import com.google.gson.Gson;
 import org.flywaydb.core.Flyway;
 
 import javax.inject.Inject;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static spark.Spark.awaitInitialization;
@@ -39,8 +32,6 @@ public class Service {
     Gson gson;
     @Inject
     List<BaseController> controllers;
-    @Inject
-    ResourceProvider resourceProvider;
 
     public Service(final String environment) {
         // initialize app component dependency
@@ -64,20 +55,6 @@ public class Service {
         }
         // wait until the server is ready to handle requests
         awaitInitialization();
-        /*
-        // Insert form
-        final BufferedReader reader;
-        final Form form = new Form();
-        form.state = "CA";
-        final FormConfig formConfig;
-        try {
-            final String formJson = resourceProvider.getResource("form/priorityHealth.json");
-            formConfig= gson.fromJson(formJson, FormConfig.class);
-            form.formConfig = formConfig;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
     }
 
     private void initAppComponent(final String environment) {

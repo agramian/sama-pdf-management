@@ -3,7 +3,7 @@ package com.abtingramian.service.route.form;
 import com.abtingramian.service.common.config.Config;
 import com.abtingramian.service.common.test.BaseRouteTest;
 import com.abtingramian.service.common.util.UUIDProvider;
-import com.abtingramian.service.data.api.RickAndMortyApi;
+import com.abtingramian.service.data.api.ExampleApi;
 import com.abtingramian.service.data.source.FormRepository;
 import com.google.gson.Gson;
 import org.mockito.Mock;
@@ -41,7 +41,7 @@ public abstract class BaseFormRouteTest extends BaseRouteTest {
     @Mock
     protected Sql2o sql2o;
     @Mock
-    protected RickAndMortyApi rickAndMortyApi;
+    protected ExampleApi exampleApi;
     @Mock
     protected Call<Void> voidCall;
     protected FormService service;

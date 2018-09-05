@@ -3,16 +3,11 @@ package com.abtingramian.service.data.api.di;
 import com.abtingramian.service.common.config.Config;
 import com.abtingramian.service.common.di.component.AppComponent;
 import com.abtingramian.service.common.util.Constants;
-import com.abtingramian.service.data.api.RickAndMortyApi;
-import com.google.gson.Gson;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import javax.inject.Singleton;
 import java.util.concurrent.TimeUnit;
@@ -39,9 +34,10 @@ public final class ApiModule {
                 .build();
     }
 
+    /*
     @Provides
     @Singleton
-    RickAndMortyApi providesRickAndMortyApi(final OkHttpClient client, final Gson gson, final Config config) {
+    ExampleApi providesRickAndMortyApi(final OkHttpClient client, final Gson gson, final Config config) {
         return new Retrofit.Builder()
                 .client(client)
                 // Java primitive and boxed type serialization/deserialization
@@ -50,7 +46,8 @@ public final class ApiModule {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(config.rickAndMortyApiBaseUrl)
                 .build()
-                .create(RickAndMortyApi.class);
+                .create(ExampleApi.class);
     }
+    */
 
 }

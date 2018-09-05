@@ -38,7 +38,7 @@ public class FormRouteTest extends BaseFormRouteTest {
         when(uuidProvider.randomUUID()).thenReturn(user.id);
         when(request.body()).thenReturn(gson.toJson(user));
         when(query.executeUpdate()).thenReturn(connection);
-        when(rickAndMortyApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
+        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
         final Set<String> queryParams = new ImmutableSet.Builder<String>().add("professional").build();
         when(request.queryParams()).thenReturn(queryParams);
         // trigger and assert
@@ -80,7 +80,7 @@ public class FormRouteTest extends BaseFormRouteTest {
         when(uuidProvider.randomUUID()).thenReturn(user.id, user.emailVerificationNonce);
         when(request.body()).thenReturn(gson.toJson(user));
         when(query.executeUpdate()).thenReturn(connection);
-        when(rickAndMortyApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
+        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
         // trigger and assert
         assertEquals(user, service.createEmail(request, response));
         // mock
@@ -101,7 +101,7 @@ public class FormRouteTest extends BaseFormRouteTest {
         when(uuidProvider.randomUUID()).thenReturn(user.id, user.emailVerificationNonce);
         when(request.body()).thenReturn(gson.toJson(user));
         when(query.executeUpdate()).thenReturn(connection);
-        when(rickAndMortyApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
+        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
         // trigger and assert
         assertEquals(user, service.createEmail(request, response));
         // mock
@@ -122,7 +122,7 @@ public class FormRouteTest extends BaseFormRouteTest {
         when(uuidProvider.randomUUID()).thenReturn(user.id, user.emailVerificationNonce);
         when(request.body()).thenReturn(gson.toJson(user));
         when(query.executeUpdate()).thenReturn(connection);
-        when(rickAndMortyApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
+        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
         // trigger and assert
         assertEquals(user, service.createEmail(request, response));
         // mock
@@ -143,7 +143,7 @@ public class FormRouteTest extends BaseFormRouteTest {
         when(uuidProvider.randomUUID()).thenReturn(user.id, user.emailVerificationNonce);
         when(request.body()).thenReturn(gson.toJson(user));
         when(query.executeUpdate()).thenReturn(connection);
-        when(rickAndMortyApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
+        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
         // trigger and assert
         assertEquals(user, service.createEmail(request, response));
         // mock

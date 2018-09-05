@@ -1,15 +1,6 @@
 package com.abtingramian.service.route;
 
-import com.abtingramian.service.common.middleware.Errors;
-import com.abtingramian.service.common.route.Routes;
 import com.abtingramian.service.common.test.BaseRouteIntegrationTest;
-import com.abtingramian.service.data.model.BaseResponse;
-import com.abtingramian.service.data.model.Character;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class FormRouteIntegrationTest extends BaseRouteIntegrationTest {
 /*
