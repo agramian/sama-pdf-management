@@ -9,7 +9,6 @@ import com.abtingramian.service.data.source.FormRepository;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.util.Pair;
 import spark.Request;
@@ -179,7 +178,7 @@ public class FormService implements FormContract.Service {
             case SUCCESSFUL_COMPLETION:
                 final List<Form> forms = getFormResult.getValue();
                 if (forms != null) {
-                    processForm(forms.get(0));
+                    //processForm(forms.get(0));
                     response.status(200);
                     final FormResponse formResponse = new FormResponse();
                     formResponse.forms = forms;

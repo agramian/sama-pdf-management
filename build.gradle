@@ -98,6 +98,7 @@ dependencies {
     implementation "org.postgresql:postgresql:$postgresqlLibVer"
     implementation "org.flywaydb:flyway-core:$flywayLibVer"
     implementation "org.sql2o:sql2o:$sql2oLibVer"
+    implementation "ca.krasnay:sqlbuilder:$sqlBuilderLibVer"
 
     // email
     implementation "com.sun.mail:javax.mail:$javaMailLibVer"

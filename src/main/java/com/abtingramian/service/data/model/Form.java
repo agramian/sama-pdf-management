@@ -15,9 +15,9 @@ public class Form implements Responsive {
     @Expose
     public String state;
     @Expose
-    public Integer insuranceCompanyId;
+    public Integer payerId;
     @Expose
-    public Integer insurancePlanId;
+    public Integer planId;
     @Expose
     public Integer medicationId;
     @Expose

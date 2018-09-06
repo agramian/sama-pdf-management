@@ -1,6 +1,8 @@
 package com.abtingramian.service.data.source;
 
+import ca.krasnay.sqlbuilder.SelectBuilder;
 import com.abtingramian.service.common.util.Constants.PSQL_ERROR_CODE;
+import com.abtingramian.service.common.util.SQLBuildertUtil;
 import com.abtingramian.service.common.util.UUIDProvider;
 import com.abtingramian.service.data.model.Form;
 import com.google.common.base.Strings;
@@ -14,7 +16,9 @@ import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FormRepository {
 
@@ -56,55 +60,38 @@ public class FormRepository {
         }*/
         return null;
     }
-/*
-:state - The state associated with the form
-:id - Id of the form
-:planId - the Id of the health plan associated with the form
-:medicationId - the medication Id
-:payerId - the payer Id
 
- */
     public Pair<@NonNull PSQL_ERROR_CODE, @Nullable List<Form>> getForm(@Nullable final Integer id,
                                                                         @Nullable final String state,
                                                                         @Nullable final Integer planId,
                                                                         @Nullable final Integer medicationId,
                                                                         @Nullable final Integer payerId) {
         try (final Connection connection = sql2o.open()) {
-            Query query;
+            final SelectBuilder selectBuilder = new SelectBuilder().from("form");
+            final Map<String, Object> whereClauses = new HashMap<>();
             if (id != null) {
-                query = connection.createQuery("select * from form where id = :id").addParameter("id", id);
+                SQLBuildertUtil.addWhereClauseToSelectBuilder(selectBuilder, "id");
+                whereClauses.put("id", id);
             } else {
-                boolean hasPreviousWhereClause = false;
-                String stringQuery = "select * from form where ";
                 if (!Strings.isNullOrEmpty(state)) {
-                    stringQuery += "state = :state";
-                    hasPreviousWhereClause = true;
+                    SQLBuildertUtil.addWhereClauseToSelectBuilder(selectBuilder, "state");
+                    whereClauses.put("state", state);
                 }
                 if (planId != null) {
-                    stringQuery += String.format(" %splan_id = :planId", hasPreviousWhereClause ? " AND " : "");
-                    hasPreviousWhereClause = true;
+                    SQLBuildertUtil.addWhereClauseToSelectBuilder(selectBuilder, "planId");
+                    whereClauses.put("planId", planId);
                 }
                 if (medicationId != null) {
-                    stringQuery += String.format(" %smedication_id = :medicationId", hasPreviousWhereClause ? " AND " : "");
-                    hasPreviousWhereClause = true;
+                    SQLBuildertUtil.addWhereClauseToSelectBuilder(selectBuilder, "medicationId");
+                    whereClauses.put("medicationId", medicationId);
                 }
                 if (payerId != null) {
-                    stringQuery += String.format(" %spayer_id = :payerId", hasPreviousWhereClause ? " AND " : "");
-                }
-                query = connection.createQuery(stringQuery);
-                if (!Strings.isNullOrEmpty(state)) {
-                    query.addParameter("state", state);
-                }
-                if (planId != null) {
-                    query.addParameter("planId", planId);
-                }
-                if (medicationId != null) {
-                    query.addParameter("medicationId", medicationId);
-                }
-                if (payerId != null) {
-                    query.addParameter("payerId", payerId);
+                    SQLBuildertUtil.addWhereClauseToSelectBuilder(selectBuilder, "payerId");
+                    whereClauses.put("payerId", payerId);
                 }
             }
+            final Query query = connection.createQuery(selectBuilder.toString());
+            whereClauses.forEach(query::addParameter);
             final List<Form> form = query.setAutoDeriveColumnNames(true).executeAndFetch(Form.class);
             return new Pair<>(PSQL_ERROR_CODE.SUCCESSFUL_COMPLETION, form);
         } catch (final Sql2oException e) {
