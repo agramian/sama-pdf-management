@@ -2,6 +2,7 @@ package com.abtingramian.service.data.api;
 
 import com.abtingramian.service.common.config.Config;
 import com.abtingramian.service.common.util.Constants;
+import com.abtingramian.service.common.util.ResourceProvider;
 import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -17,6 +18,7 @@ import java.nio.file.Paths;
 public class BaseApiTest {
 
     protected static Config config;
+    protected ResourceProvider resourceProvider = new ResourceProvider(new Gson());
 
     protected static Retrofit.Builder getRetrofitBuilder() throws IOException {
         final Gson gson = new Gson();

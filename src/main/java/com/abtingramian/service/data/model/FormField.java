@@ -31,7 +31,12 @@ public class FormField implements Responsive {
             return false;
         }
         final FormField other = (FormField) obj;
-        return Objects.equal(key, other.key);
+        return Objects.equal(key, other.key)
+                && Objects.equal(title, other.title)
+                && Objects.equal(type, other.type)
+                && Objects.equal(defaultValue, other.defaultValue)
+                && Objects.equal(options, other.options)
+                && Objects.equal(displayIf, other.displayIf);
     }
 
     @Override

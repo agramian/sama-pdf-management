@@ -5,6 +5,7 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 
 /**
@@ -25,6 +26,10 @@ public class ResourceProvider {
 
     public <T> T fromJson(final String path, final Class<T> classOfT) throws IOException {
         return gson.fromJson(getResource(path), classOfT);
+    }
+
+    public <T> T fromJson(final String path, final Type typeOfT) throws IOException {
+        return gson.fromJson(getResource(path), typeOfT);
     }
 
 }

@@ -52,7 +52,7 @@ public abstract class BaseFormRouteTest extends BaseRouteTest {
         // common mocks
         final Config config = new Config();
         config.debug = true;
-        service = new FormService(gson, new FormRepository(sql2o, uuidProvider));
+        service = new FormService(gson, new FormRepository(sql2o, uuidProvider, gson));
         when(sql2o.beginTransaction()).thenReturn(connection);
         when(sql2o.open()).thenReturn(connection);
         when(connection.createQuery(any())).thenReturn(query);

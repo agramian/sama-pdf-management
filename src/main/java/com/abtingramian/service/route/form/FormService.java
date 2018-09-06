@@ -166,7 +166,7 @@ public class FormService implements FormContract.Service {
                 && Strings.isNullOrEmpty(request.queryParams("planId"))
                 && Strings.isNullOrEmpty(request.queryParams("medicationId"))
                 && Strings.isNullOrEmpty(request.queryParams("payerId"))) {
-            errors.add(new Error("all", new Errors.MissingPathParameterException()));
+            errors.add(new Error("all", new Errors.MissingQueryParameterException()));
         }
         if (!errors.isEmpty()) {
             // return error if any problems were found with the request
@@ -223,20 +223,41 @@ public class FormService implements FormContract.Service {
                     if (formConfigElementItem instanceof JsonObject) {
                         // construct new form field
                         final FormField formField = new FormField();
+                        formField.options = new ArrayList<>();
                         // parse form config element item as json object
                         final JsonObject formConfigElementItemJsonObject = ((JsonObject) formConfigElementItem);
+                        // parse primitive fields
                         formField.title = formConfigElementItemJsonObject.get("title").getAsString();
                         formField.type = formConfigElementItemJsonObject.get("type").getAsString();
                         formField.key = formConfigElementItemJsonObject.has("key") ? formConfigElementItemJsonObject.get("key").getAsString() : null;
                         formField.displayIf = formConfigElementItemJsonObject.has("displayIf") ? formConfigElementItemJsonObject.get("displayIf").getAsString() : null;
-                        // iterate through form element formElementItems
+                        // iterate through options
+                        ((JsonObject) formConfigElementItem).get("options").getAsJsonArray().forEach(option -> {
+                            // construct new option
+                            final Option formFieldOption = new Option();
+                            if (option instanceof JsonObject) {
+                                // parse form config element item as json object
+                                final JsonObject optionJsonObject = ((JsonObject) option);
+                                // parse primitive fields
+                                formFieldOption.key = optionJsonObject.get("key").getAsString();
+                                formFieldOption.title = optionJsonObject.get("title").getAsString();
+                                formFieldOption.type = optionJsonObject.get("type").getAsString();
+                            } else {
+                                // add new form field form matching field in config map
+                                final FormField formFieldConfigItem = formFieldConfigMap.get(option.getAsString());
+                                formFieldOption.key = formFieldConfigItem.key;
+                                formFieldOption.title = formFieldConfigItem.title;
+                                formFieldOption.type = formFieldConfigItem.type;
+                            }
+                            // add new option
+                            formField.options.add(formFieldOption);
+                        });
                         // add new form field to form element
                         formElement.items.add(formField);
                     } else {
                         // add new form field form matching field in config map
                         formElement.items.add(formFieldConfigMap.get(formConfigElementItem.getAsString()));
                     }
-
                 });
                 formElements.add(formElement);
             });

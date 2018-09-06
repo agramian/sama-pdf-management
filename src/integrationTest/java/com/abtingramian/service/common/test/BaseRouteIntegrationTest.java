@@ -2,6 +2,7 @@ package com.abtingramian.service.common.test;
 
 import com.abtingramian.service.Service;
 import com.abtingramian.service.common.di.component.AppComponent;
+import com.abtingramian.service.common.util.ResourceProvider;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import okhttp3.*;
@@ -24,6 +25,7 @@ public abstract class BaseRouteIntegrationTest {//<T extends Route> {
 
     protected final Gson gson;
     protected final AppComponent appComponent;
+    protected ResourceProvider resourceProvider = new ResourceProvider(new Gson());
     private final OkHttpClient client;
     private final Service service;
 

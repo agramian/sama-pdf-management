@@ -1,150 +1,50 @@
 package com.abtingramian.service.route.form;
 
+
+import com.abtingramian.service.common.middleware.Errors;
+import com.abtingramian.service.data.model.BaseResponse;
+import com.abtingramian.service.data.model.Error;
+import com.abtingramian.service.data.model.Form;
+import com.abtingramian.service.data.model.FormElement;
+import com.google.common.collect.ImmutableList;
+import com.google.gson.reflect.TypeToken;
+import org.junit.Test;
+import org.postgresql.util.PGobject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+
 public class FormRouteTest extends BaseFormRouteTest {
-/*
+
     @Test
-    public void test_create_character_empty_body() throws Exception {
+    public void test_get_form_missing_all_fields() throws Exception {
+        // trigger and assert
+        assertEquals(new BaseResponse.Builder().error(new Error("all", new Errors.MissingQueryParameterException())).build(),
+                service.getForm(request, response));
+    }
+
+    @Test
+    public void test_get_form() throws Exception {
         // mock
-        when(request.body()).thenReturn("");
-        // set expectations
-        exception.expect(Errors.MissingPostBodyException.class);
+        final Form form = new Form();
+        form.id = 0;
+        form.state = "CA";
+        form.formFieldConfig = new PGobject();
+        form.formFieldConfig.setType("json");
+        form.formFieldConfig.setValue(resourceProvider.getResource("form/priority_health/form_field_config.json"));
+        form.formElementConfig = new PGobject();
+        form.formElementConfig.setType("json");
+        form.formElementConfig.setValue(resourceProvider.getResource("form/priority_health/form_element_config.json"));
+        when(request.queryParams("id")).thenReturn("0");
+        final Form processedForm = new Form(form);
+        final Type formElementListType = new TypeToken<ArrayList<FormElement>>(){}.getType();
+        processedForm.formElements = resourceProvider.fromJson("form/priority_health/processed_form_config.json", formElementListType);
+        when(query.executeAndFetch(Form.class)).thenReturn(new ImmutableList.Builder<Form>().add(form).build());
         // trigger
-        service.createCharacter(request, response);
+        assertEquals(new ImmutableList.Builder<Form>().add(processedForm).build(), service.getForm(request, response));
     }
 
-    @Test
-    public void test_create_character_missing_id() throws Exception {
-        // mock
-        when(request.body()).thenReturn("{}");
-        // trigger and assert
-        assertEquals(new BaseResponse.Builder().error(new Error("id", new Errors.MissingPostBodyFieldException())).build(),
-                service.createCharacter(request, response));
-    }
-
-    @Test
-    public void test_user_email_success() throws Exception {
-        // mock
-        final User user = new User();
-        user.email = "test@test.com";
-        user.id = UUID.randomUUID();
-        when(uuidProvider.randomUUID()).thenReturn(user.id);
-        when(request.body()).thenReturn(gson.toJson(user));
-        when(query.executeUpdate()).thenReturn(connection);
-        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
-        final Set<String> queryParams = new ImmutableSet.Builder<String>().add("professional").build();
-        when(request.queryParams()).thenReturn(queryParams);
-        // trigger and assert
-        assertEquals(user, service.createEmail(request, response));
-    }
-
-    @Test
-    public void test_user_email_duplicate_email() throws Exception {
-        // mock
-        final User user = new User();
-        user.email = "test@test.com";
-        when(request.body()).thenReturn(gson.toJson(user));
-        when(psqlException.getSQLState()).thenReturn(Constants.PSQL_ERROR_CODE.UNIQUE_VIOLATION.code);
-        when(query.executeUpdate()).thenThrow(sql2oException);
-        // trigger and assert
-        assertEquals(new BaseResponse.Builder().duplicate(User.class).build(), service.createEmail(request, response));
-    }
-
-    @Test
-    public void test_user_email_untracked_psql_error() throws Exception {
-        // mock
-        final User user = new User();
-        user.id = UUID.randomUUID();
-        user.email = "test@test.com";
-        when(request.body()).thenReturn(gson.toJson(user));
-        when(psqlException.getSQLState()).thenReturn(Constants.PSQL_ERROR_CODE.UNTRACKED_ERROR.code);
-        when(query.executeUpdate()).thenThrow(sql2oException);
-        // trigger and assert
-        assertEquals(new BaseResponse.Builder().error().build(), service.createEmail(request, response));
-    }
-
-    @Test
-    public void test_user_email_verify_success() throws Exception {
-        // mock
-        final User user = new User();
-        user.email = "test@test.com";
-        user.id = UUID.randomUUID();
-        user.emailVerificationNonce = UUID.randomUUID();
-        when(uuidProvider.randomUUID()).thenReturn(user.id, user.emailVerificationNonce);
-        when(request.body()).thenReturn(gson.toJson(user));
-        when(query.executeUpdate()).thenReturn(connection);
-        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
-        // trigger and assert
-        assertEquals(user, service.createEmail(request, response));
-        // mock
-        when(request.params(":id")).thenReturn(user.id.toString());
-        when(request.params(":nonce")).thenReturn(user.emailVerificationNonce.toString());
-        when(query.executeAndFetchFirst(User.class)).thenReturn(user);
-        // trigger and assert
-        assertEquals(Constants.EMPTY_RESPONSE, service.verifyEmail(request, response));
-    }
-
-    @Test
-    public void test_user_email_verify_missing_id() throws Exception {
-        // mock
-        final User user = new User();
-        user.email = "test@test.com";
-        user.id = UUID.randomUUID();
-        user.emailVerificationNonce = UUID.randomUUID();
-        when(uuidProvider.randomUUID()).thenReturn(user.id, user.emailVerificationNonce);
-        when(request.body()).thenReturn(gson.toJson(user));
-        when(query.executeUpdate()).thenReturn(connection);
-        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
-        // trigger and assert
-        assertEquals(user, service.createEmail(request, response));
-        // mock
-        when(request.params(":id")).thenReturn(null);
-        when(request.params(":nonce")).thenReturn(user.emailVerificationNonce.toString());
-        // trigger and assert
-        assertEquals(new BaseResponse.Builder().error(new Error("id",
-                new Errors.MissingPathParameterException())).build(), service.verifyEmail(request, response));
-    }
-
-    @Test
-    public void test_user_email_verify_missing_nonce() throws Exception {
-        // mock
-        final User user = new User();
-        user.email = "test@test.com";
-        user.id = UUID.randomUUID();
-        user.emailVerificationNonce = UUID.randomUUID();
-        when(uuidProvider.randomUUID()).thenReturn(user.id, user.emailVerificationNonce);
-        when(request.body()).thenReturn(gson.toJson(user));
-        when(query.executeUpdate()).thenReturn(connection);
-        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
-        // trigger and assert
-        assertEquals(user, service.createEmail(request, response));
-        // mock
-        when(request.params(":id")).thenReturn(user.id.toString());
-        when(request.params(":nonce")).thenReturn("");
-        // trigger and assert
-        assertEquals(new BaseResponse.Builder().error(new Error("nonce",
-                new Errors.MissingPathParameterException())).build(), service.verifyEmail(request, response));
-    }
-
-    @Test
-    public void test_user_email_verify_missing_id_and_nonce() throws Exception {
-        // mock
-        final User user = new User();
-        user.email = "test@test.com";
-        user.id = UUID.randomUUID();
-        user.emailVerificationNonce = UUID.randomUUID();
-        when(uuidProvider.randomUUID()).thenReturn(user.id, user.emailVerificationNonce);
-        when(request.body()).thenReturn(gson.toJson(user));
-        when(query.executeUpdate()).thenReturn(connection);
-        when(exampleApi.multipart(any(), any(), any(), any(), any(), any(), any())).thenReturn(voidCall);
-        // trigger and assert
-        assertEquals(user, service.createEmail(request, response));
-        // mock
-        when(request.params(":id")).thenReturn("");
-        when(request.params(":nonce")).thenReturn(null);
-        // trigger and assert
-        assertEquals(new BaseResponse.Builder().error(new Error("id",
-                new Errors.MissingPathParameterException()), new Error("nonce",
-                new Errors.MissingPathParameterException())).build(), service.verifyEmail(request, response));
-    }
-*/
 }

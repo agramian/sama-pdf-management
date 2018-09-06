@@ -34,13 +34,40 @@ public class Form implements Responsive {
     public PGobject formElementConfig;
     public PGobject formFieldConfig;
 
+    public Form() {
+    }
+
+    public Form(final Form form) {
+        this.id = form.id;
+        this.createdAt = form.createdAt;
+        this.updatedAt = form.updatedAt;
+        this.state = form.state;
+        this.payerId = form.payerId;
+        this.planId = form.planId;
+        this.medicationId = form.medicationId;
+        this.pdfFilePath = form.pdfFilePath;
+        this.formConfig = form.formConfig;
+        this.formElements = form.formElements;
+        this.formElementConfig = form.formElementConfig;
+        this.formFieldConfig = form.formFieldConfig;
+    }
+
     @Override
     public boolean equals(final Object obj) {
         if (obj == null || !Form.class.isAssignableFrom(obj.getClass())) {
             return false;
         }
         final Form other = (Form) obj;
-        return Objects.equal(id, other.id);
+        return Objects.equal(id, other.id)
+                && Objects.equal(state, other.state)
+                && Objects.equal(payerId, other.payerId)
+                && Objects.equal(planId, other.planId)
+                && Objects.equal(medicationId, other.medicationId)
+                && Objects.equal(pdfFilePath, other.pdfFilePath)
+                && Objects.equal(formConfig, other.formConfig)
+                && Objects.equal(formElements, other.formElements)
+                && Objects.equal(formElementConfig, other.formElementConfig)
+                && Objects.equal(formFieldConfig, other.formFieldConfig);
     }
 
     @Override
