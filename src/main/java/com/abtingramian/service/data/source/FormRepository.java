@@ -6,6 +6,7 @@ import com.abtingramian.service.common.util.SQLBuildertUtil;
 import com.abtingramian.service.common.util.UUIDProvider;
 import com.abtingramian.service.data.model.Form;
 import com.google.common.base.Strings;
+import com.google.gson.Gson;
 import javafx.util.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -24,10 +25,12 @@ public class FormRepository {
 
     private final Sql2o sql2o;
     private final UUIDProvider uuidProvider;
+    private final Gson gson;
 
-    public FormRepository(final Sql2o sql2o, final UUIDProvider uuidProvider) {
+    public FormRepository(final Sql2o sql2o, final UUIDProvider uuidProvider, final Gson gson) {
         this.sql2o = sql2o;
         this.uuidProvider = uuidProvider;
+        this.gson = gson;
     }
 
     public Pair<@NonNull PSQL_ERROR_CODE, @Nullable Form> fillForm(@Nonnull final Integer id, @Nonnull final String json) {
@@ -92,8 +95,7 @@ public class FormRepository {
             }
             final Query query = connection.createQuery(selectBuilder.toString());
             whereClauses.forEach(query::addParameter);
-            final List<Form> form = query.setAutoDeriveColumnNames(true).executeAndFetch(Form.class);
-            return new Pair<>(PSQL_ERROR_CODE.SUCCESSFUL_COMPLETION, form);
+            return new Pair<>(PSQL_ERROR_CODE.SUCCESSFUL_COMPLETION, query.setAutoDeriveColumnNames(true).executeAndFetch(Form.class));
         } catch (final Sql2oException e) {
             e.printStackTrace();
             if (e.getCause() instanceof PSQLException) {

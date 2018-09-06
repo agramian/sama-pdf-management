@@ -8,13 +8,10 @@ import com.google.gson.annotations.SerializedName;
  */
 public class InputBox {
 
-    @SerializedName("guid")
     @Expose
     public String guid;
-    @SerializedName("rect")
     @Expose
     public Rect rect;
-    @SerializedName("page")
     @Expose
     public Integer page;
     @SerializedName("field_guid")

@@ -2,8 +2,11 @@ package com.abtingramian.service.data.model;
 
 import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+import org.postgresql.util.PGobject;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * This is a model representing a Form object.
@@ -12,6 +15,9 @@ public class Form implements Responsive {
 
     @Expose
     public Integer id;
+    public Date createdAt;
+    public Date updatedAt;
+
     @Expose
     public String state;
     @Expose
@@ -20,16 +26,13 @@ public class Form implements Responsive {
     public Integer planId;
     @Expose
     public Integer medicationId;
+    public String pdfFilePath;
+    public PGobject formConfig;
     @Expose
-    public FormConfig formConfig;
-    @Expose
-    public String formConfigRaw;
-    @Expose
-    public String formConfigFormatted;
-    @Expose
-    public Date createdAt;
-    @Expose
-    public Date updatedAt;
+    @SerializedName("formConfig")
+    public FormConfig formConfigProcessed;
+    public PGobject formElementConfig;
+    public PGobject formFieldConfig;
 
     @Override
     public boolean equals(final Object obj) {

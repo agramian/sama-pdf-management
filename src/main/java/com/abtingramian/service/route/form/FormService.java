@@ -10,11 +10,13 @@ import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import javafx.util.Pair;
 import spark.Request;
 import spark.Response;
 
 import javax.annotation.Nonnull;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,14 +180,8 @@ public class FormService implements FormContract.Service {
             case SUCCESSFUL_COMPLETION:
                 final List<Form> forms = getFormResult.getValue();
                 if (forms != null) {
-                    //processForm(forms.get(0));
                     response.status(200);
-                    final FormResponse formResponse = new FormResponse();
-                    formResponse.forms = forms;
-                    return formResponse;
-                } else {
-                    response.status(404);
-                    return Errors.ERROR_404;
+                    return new ResponseList<>(processForms(forms));
                 }
             default:
                 response.status(500);
@@ -198,19 +194,29 @@ public class FormService implements FormContract.Service {
         return null;
     }
 
-    private void processForm(@Nonnull final Form form) {
-        final JsonArray formConfigRaw = gson.fromJson (form.formConfigRaw, JsonArray.class);
-        final JsonArray formConfigFormatted = gson.fromJson (form.formConfigFormatted, JsonArray.class);
-        final JsonArray substitutedForm = new JsonArray();
+    private List<Form> processForms(@Nonnull final List<Form> forms) {
+        if (forms.isEmpty()) {
+            // return immediately if the forms list is empty
+            return forms;
+        }
+        // store field for re-use when de-serializing form config list from json
+        final Type formConfigElementListType = new TypeToken<ArrayList<FormField>>(){}.getType();
+        forms.forEach(form -> {
+            /*final List<FormField> formFields = gson.fromJson(form.formConfigRaw, formConfigElementListType);
 
+            final JsonArray formConfigElementsJson = gson.fromJson(form.formConfigFormatted, JsonArray.class);
 
-        // Iterated through formatted config looking for option strings and strings withing items
-        formConfigFormatted.forEach(jsonElement -> {
-            final JsonArray items = ((JsonObject) jsonElement).get("items").getAsJsonArray();
-            items.forEach(itemJsonElement -> {
+            final JsonArray formConfigFormatted = gson.fromJson(form.formConfigFormatted, JsonArray.class);
+            final JsonArray substitutedForm = new JsonArray();
+            // Iterated through formatted config looking for option strings and strings withing items
+            formConfigFormatted.forEach(jsonElement -> {
+                final JsonArray items = ((JsonObject) jsonElement).get("items").getAsJsonArray();
+                items.forEach(itemJsonElement -> {
 
-            });
+                });
+            });*/
         });
+        return forms;
     }
 
 }

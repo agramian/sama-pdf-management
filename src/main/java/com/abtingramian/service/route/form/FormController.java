@@ -1,10 +1,7 @@
 package com.abtingramian.service.route.form;
 
 import com.abtingramian.service.common.route.Routes;
-import com.abtingramian.service.data.model.Form;
 import com.google.gson.Gson;
-
-import javax.annotation.Nonnull;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -29,8 +26,4 @@ public class FormController implements FormContract.Controller {
     public void defineFilters() {
     }
 
-    @Override
-    public void processForm(@Nonnull final Form form) {
-
-    }
 }

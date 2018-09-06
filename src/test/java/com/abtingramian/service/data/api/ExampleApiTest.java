@@ -1,14 +1,7 @@
 package com.abtingramian.service.data.api;
 
 import com.abtingramian.service.common.util.ResourceProvider;
-import com.google.common.base.Objects;
 import com.google.gson.Gson;
-import okhttp3.Credentials;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import retrofit2.Response;
-
-import static org.junit.Assert.assertTrue;
 
 public class ExampleApiTest extends BaseApiTest {
 

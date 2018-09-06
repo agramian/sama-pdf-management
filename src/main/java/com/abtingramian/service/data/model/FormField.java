@@ -4,12 +4,10 @@ import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
-
 /**
  * This is a model representing a Form config object.
  */
-public class FormConfigElement implements Responsive {
+public class FormField implements Responsive {
 
     @Expose
     public String key;
@@ -19,18 +17,14 @@ public class FormConfigElement implements Responsive {
     public String type;
     @Expose
     @SerializedName("default")
-    public String defaultvalue;
-    @Expose
-    public Date createdAt;
-    @Expose
-    public Date updatedAt;
+    public String defaultValue;
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null || !FormConfigElement.class.isAssignableFrom(obj.getClass())) {
+        if (obj == null || !FormField.class.isAssignableFrom(obj.getClass())) {
             return false;
         }
-        final FormConfigElement other = (FormConfigElement) obj;
+        final FormField other = (FormField) obj;
         return Objects.equal(key, other.key);
     }
 

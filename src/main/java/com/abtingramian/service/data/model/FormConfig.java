@@ -1,13 +1,14 @@
 package com.abtingramian.service.data.model;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * This is a model representing a Form config object.
  */
-public class FormConfig {
+public class FormConfig implements Responsive {
 
     @SerializedName("file_name")
     @Expose
