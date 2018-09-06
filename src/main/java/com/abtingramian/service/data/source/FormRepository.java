@@ -1,11 +1,13 @@
 package com.abtingramian.service.data.source;
 
+import ca.krasnay.sqlbuilder.InsertBuilder;
 import ca.krasnay.sqlbuilder.SelectBuilder;
 import com.abtingramian.service.common.util.Constants.PSQL_ERROR_CODE;
 import com.abtingramian.service.common.util.SQLBuildertUtil;
 import com.abtingramian.service.common.util.UUIDProvider;
 import com.abtingramian.service.data.model.Form;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import javafx.util.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -33,26 +35,17 @@ public class FormRepository {
         this.gson = gson;
     }
 
-    public Pair<@NonNull PSQL_ERROR_CODE, @Nullable Form> fillForm(@Nonnull final Integer id, @Nonnull final String json) {
-        /*
-        // insert a new form and assign them roles in a transaction
-        try (final Connection connection = sql2o.beginTransaction()) {
+    public Pair<@NonNull PSQL_ERROR_CODE, @Nullable Form> createForm(@Nonnull final Form form) {
+        // insert a new form
+        try (final Connection connection = sql2o.open()) {
+            final InsertBuilder insertBuilder = new InsertBuilder("form");
+            SQLBuildertUtil.setColumnValuesOnInsertBuilder(insertBuilder, new ImmutableList.Builder<String>()
+                    .add("id", "state", "payerId", "planId", "medicationId", "pdfFilePath", "formConfig", "formElementConfig", "formFieldConfig")
+                    .build());
             // insert form
-            connection.createQuery("insert into characters (id, name) "
-                    + "values (:id, :name)")
+            connection.createQuery(insertBuilder.toString())
                     .bind(form)
                     .executeUpdate();
-            // insert form roles
-            final Query query = connection.createQuery("insert into user_role(user_id, role_id) VALUES (:userId, :roleId)");
-            // all users are members
-            query.addParameter("userId", form.id).addParameter("roleId", Role.MEMBER).addToBatch();
-            if (isProfessional) {
-                // add the professional role if necessary
-                query.addParameter("userId", form.id).addParameter("roleId", Role.PROFESSIONAL).addToBatch();
-            }
-            query.executeBatch();
-            // commit transaction
-            connection.commit();
             return new Pair<>(PSQL_ERROR_CODE.SUCCESSFUL_COMPLETION, form);
         } catch (final Sql2oException e) {
             e.printStackTrace();
@@ -60,7 +53,10 @@ public class FormRepository {
                 return new Pair<>(PSQL_ERROR_CODE.fromCode(((PSQLException) e.getCause()).getSQLState()), null);
             }
             return new Pair<>(PSQL_ERROR_CODE.UNTRACKED_ERROR, null);
-        }*/
+        }
+    }
+
+    public Pair<@NonNull PSQL_ERROR_CODE, @Nullable Form> fillForm(@Nonnull final Integer id, @Nonnull final String json) {
         return null;
     }
 

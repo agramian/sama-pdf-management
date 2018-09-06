@@ -13,6 +13,7 @@ import org.junit.BeforeClass;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -61,6 +62,22 @@ public abstract class BaseRouteIntegrationTest {//<T extends Route> {
 
     protected <T> TestResponse<T> get(final String route, final Class<T> classOfT) throws IOException {
         return sendRequest(getRequestBuilder(route, null).get().build(), classOfT);
+    }
+
+    protected <T> TestResponse<T> get(final String route, final Type typeOfT) throws IOException {
+        return sendRequest(getRequestBuilder(route, null).get().build(), typeOfT);
+    }
+
+    protected <T> TestResponse<T> get(final String route,
+                                       @Nullable final Map<String,String> queryParams,
+                                       final Class<T> classOfT) throws IOException {
+        return sendRequest(getRequestBuilder(route, queryParams).get().build(), classOfT);
+    }
+
+    protected <T> TestResponse<T> get(final String route,
+                                      @Nullable final Map<String,String> queryParams,
+                                      final Type typeOfT) throws IOException {
+        return sendRequest(getRequestBuilder(route, queryParams).get().build(), typeOfT);
     }
 
     protected Response post(final String route, final RequestBody requestBody) throws IOException {
@@ -118,6 +135,15 @@ public abstract class BaseRouteIntegrationTest {//<T extends Route> {
         final TestResponse<T> testResponse = new TestResponse<>();
         testResponse.response = client.newCall(request).execute();
         testResponse.responseModel = gson.fromJson(testResponse.response.body().string(), classOfT);
+        return testResponse;
+    }
+
+    private <T> TestResponse<T> sendRequest(final Request request, final Type typeOfT) throws IOException {
+        // make the request and return a TestResponse object which contains
+        // the original response and the model object parsed from the json
+        final TestResponse<T> testResponse = new TestResponse<>();
+        testResponse.response = client.newCall(request).execute();
+        testResponse.responseModel = gson.fromJson(testResponse.response.body().string(), typeOfT);
         return testResponse;
     }
 

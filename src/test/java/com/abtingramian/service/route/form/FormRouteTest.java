@@ -21,7 +21,7 @@ public class FormRouteTest extends BaseFormRouteTest {
 
     @Test
     public void test_get_form_missing_all_fields() throws Exception {
-        // trigger and assert
+        // trigger and verify
         assertEquals(new BaseResponse.Builder().error(new Error("all", new Errors.MissingQueryParameterException())).build(),
                 service.getForm(request, response));
     }
@@ -39,11 +39,12 @@ public class FormRouteTest extends BaseFormRouteTest {
         form.formElementConfig.setType("json");
         form.formElementConfig.setValue(resourceProvider.getResource("form/priority_health/form_element_config.json"));
         when(request.queryParams("id")).thenReturn("0");
+        when(query.executeAndFetch(Form.class)).thenReturn(new ImmutableList.Builder<Form>().add(form).build());
+        // create processed form from validation file for validation
         final Form processedForm = new Form(form);
         final Type formElementListType = new TypeToken<ArrayList<FormElement>>(){}.getType();
         processedForm.formElements = resourceProvider.fromJson("form/priority_health/processed_form_config.json", formElementListType);
-        when(query.executeAndFetch(Form.class)).thenReturn(new ImmutableList.Builder<Form>().add(form).build());
-        // trigger
+        // trigger and verify
         assertEquals(new ImmutableList.Builder<Form>().add(processedForm).build(), service.getForm(request, response));
     }
 
