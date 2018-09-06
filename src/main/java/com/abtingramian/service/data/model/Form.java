@@ -30,7 +30,7 @@ public class Form implements Responsive {
     public PGobject formConfig;
     @Expose
     @SerializedName("formConfig")
-    public FormConfig formConfigProcessed;
+    public List<FormElement> formElements;
     public PGobject formElementConfig;
     public PGobject formFieldConfig;
 

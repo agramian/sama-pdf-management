@@ -4,8 +4,10 @@ import com.google.common.base.Objects;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
- * This is a model representing a Form config object.
+ * This is a model representing a Form field object.
  */
 public class FormField implements Responsive {
 
@@ -18,6 +20,10 @@ public class FormField implements Responsive {
     @Expose
     @SerializedName("default")
     public String defaultValue;
+    @Expose
+    public List<Option> options;
+    @Expose
+    public String displayIf;
 
     @Override
     public boolean equals(final Object obj) {

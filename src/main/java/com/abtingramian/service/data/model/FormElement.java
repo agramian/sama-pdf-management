@@ -12,6 +12,6 @@ public class FormElement implements Responsive {
     @Expose
     public String title;
     @Expose
-    public List<Item> items;
+    public List<FormField> items;
 
 }

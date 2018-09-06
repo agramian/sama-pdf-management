@@ -7,6 +7,7 @@ import com.abtingramian.service.data.model.*;
 import com.abtingramian.service.data.model.Error;
 import com.abtingramian.service.data.source.FormRepository;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -19,6 +20,7 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class FormService implements FormContract.Service {
 
@@ -200,21 +202,45 @@ public class FormService implements FormContract.Service {
             return forms;
         }
         // store field for re-use when de-serializing form config list from json
-        final Type formConfigElementListType = new TypeToken<ArrayList<FormField>>(){}.getType();
+        final Type formFieldConfigListType = new TypeToken<ArrayList<FormField>>(){}.getType();
+        // process each form
         forms.forEach(form -> {
-            /*final List<FormField> formFields = gson.fromJson(form.formConfigRaw, formConfigElementListType);
-
-            final JsonArray formConfigElementsJson = gson.fromJson(form.formConfigFormatted, JsonArray.class);
-
-            final JsonArray formConfigFormatted = gson.fromJson(form.formConfigFormatted, JsonArray.class);
-            final JsonArray substitutedForm = new JsonArray();
-            // Iterated through formatted config looking for option strings and strings withing items
-            formConfigFormatted.forEach(jsonElement -> {
-                final JsonArray items = ((JsonObject) jsonElement).get("items").getAsJsonArray();
-                items.forEach(itemJsonElement -> {
+            // deserialize config objects
+            final List<FormField> formFieldConfig = gson.fromJson(form.formFieldConfig.getValue(), formFieldConfigListType);
+            final JsonArray formElementConfig = gson.fromJson(form.formElementConfig.getValue(), JsonArray.class);
+            // create map from form field config
+            final Map<String, FormField> formFieldConfigMap = Maps.uniqueIndex(formFieldConfig, formField -> formField.key);
+            // create a processed form elements object to construct
+            final List<FormElement> formElements = new ArrayList<>();
+            // iterate through the form config and interpolate the form field values where necessary
+            formElementConfig.forEach(formConfigElement -> {
+                // construct a form element
+                final FormElement formElement = new FormElement();
+                formElement.title = ((JsonObject) formConfigElement).get("title").getAsString();
+                formElement.items = new ArrayList<>();
+                // iterate through form config formElementItems
+                ((JsonObject) formConfigElement).get("items").getAsJsonArray().forEach(formConfigElementItem -> {
+                    if (formConfigElementItem instanceof JsonObject) {
+                        // construct new form field
+                        final FormField formField = new FormField();
+                        // parse form config element item as json object
+                        final JsonObject formConfigElementItemJsonObject = ((JsonObject) formConfigElementItem);
+                        formField.title = formConfigElementItemJsonObject.get("title").getAsString();
+                        formField.type = formConfigElementItemJsonObject.get("type").getAsString();
+                        formField.key = formConfigElementItemJsonObject.has("key") ? formConfigElementItemJsonObject.get("key").getAsString() : null;
+                        formField.displayIf = formConfigElementItemJsonObject.has("displayIf") ? formConfigElementItemJsonObject.get("displayIf").getAsString() : null;
+                        // iterate through form element formElementItems
+                        // add new form field to form element
+                        formElement.items.add(formField);
+                    } else {
+                        // add new form field form matching field in config map
+                        formElement.items.add(formFieldConfigMap.get(formConfigElementItem.getAsString()));
+                    }
 
                 });
-            });*/
+                formElements.add(formElement);
+            });
+            form.formElements = formElements;
         });
         return forms;
     }
