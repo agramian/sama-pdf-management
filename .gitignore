@@ -14,13 +14,13 @@
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
-log/
 
 # Gradle:
 .idea/**/gradle.xml
 .idea/**/libraries
 .gradle
 build/
+log/
 
 ## File-based project format:
 *.iws
